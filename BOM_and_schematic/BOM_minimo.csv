@@ -1,5 +1,5 @@
 ﻿Name,	Designator,	Quantity,	Manufacturer Part,	Manufacturer
-"100nF",	"C1",	1,	"CL05B104KO5NNNC",	"SAMSUNG(三星)"
+100nF,	C1,	1,	CL05B104KO5NNNC,	SAMSUNG(三星)
 "100nF",	"C2",	1,	"CL05B104KO5NNNC",	"SAMSUNG(三星)"
 "100nF",	"C3",	1,	"CL05B104KO5NNNC",	"SAMSUNG(三星)"
 "47uF",	"C4",	1,	"CL21A476MQYNNNE",	"SAMSUNG"
