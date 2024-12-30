@@ -37,7 +37,7 @@ BATTERY CHECK
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define F_CPU 8000000
+//#define F_CPU 8000000
 
 //audio and control signal interrupt
 int count;
@@ -273,4 +273,3 @@ void flashLEDSlow(int times) {
     digitalWrite(0, HIGH);
   }
 }
-

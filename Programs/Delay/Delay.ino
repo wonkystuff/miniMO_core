@@ -38,7 +38,7 @@ BATTERY CHECK
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define F_CPU 8000000
+//#define F_CPU 8000000
 
 //interrupt variables accessed globally
 volatile boolean gotReadings;

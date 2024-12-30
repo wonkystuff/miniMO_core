@@ -90,7 +90,7 @@ const byte PROGMEM maxSteps = 12;                             //number of notes 
 const int PROGMEM rootNote = 60;                              //MIDI root note
 
 const byte maxOctaves = 3;                                    //values: 0 (no change), 1 octave, 2 octaves               
-const byte transposeValues[8] = {-7, -5, -2, 0, 2, 5, 7, 12}; //transposition intervals, in semitones
+const char transposeValues[8] = {-7, -5, -2, 0, 2, 5, 7, 12}; //transposition intervals, in semitones
 ///////////////////////////////////////////
 
 //other sequencer data

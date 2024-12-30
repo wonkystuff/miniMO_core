@@ -122,7 +122,7 @@ void playList (int tune) { //here you set what tunes to play,and their order. Do
 
 //////////////////////////////////////////////////////////////////////////////
 
-#define F_CPU 8000000
+//#define F_CPU 8000000
 
 #include <util/delay.h>
 
