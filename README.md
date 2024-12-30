@@ -11,6 +11,8 @@ https://minimosynth.com/
 
 wonkystuff already has an ATTiny85-based programmable module with four knobs and two outputs, so I thought that this simpler module might be fun as a _micro module_ for the __AE Modular__ system, so that's what will be in this fork.
 
+![First render](minimo_3D.png)
+
 Let's see what happens!
 
 * __2024/12/30__: Added Gerber files and renders of the PCB top & bottom for reference.
