@@ -48,7 +48,6 @@ NOTES&TROUBLESHOOTING
 */
 
 #include <avr/io.h>
-#include <util/delay.h>
 
 // Base-timer is running at 8MHz
 #define F_TIM (8000000L)
@@ -80,7 +79,7 @@ int button_delay_b;
 int additionalClicks = 0;
 
 // button interrupt
-bool inputButtonValue;
+volatile bool inputButtonValue;
 
 void setup()
 {
@@ -104,7 +103,10 @@ void setup()
 
     // set clock source for PWM -datasheet p94
     PLLCSR |= (1 << PLLE); // Enable PLL (64 MHz)
-    _delay_us(100);        // Wait for a steady state
+
+    for(int i=0;i<10000;i++)
+        ;             // Stabilize
+
     while (!(PLLCSR & (1 << PLOCK)))
         ;                  // Ensure PLL lock
     PLLCSR |= (1 << PCKE); // Enable PLL as clock source for timer 1
@@ -143,16 +145,18 @@ void setup()
     digitalWrite(0, HIGH); // turn LED ON
 }
 
+static volatile long tick = 0; // simple ticker which runs at the sample rate - it's set/reset in the check button routine when active
 ISR(TIM0_COMPA_vect)
 { // Timer 0 interruption - changes the width of timer 1's pulse to generate waves
     static uint8_t sample;
     OCR1B = sample;
     sample = algo(sample, currentAlgo);
+    tick++;
 }
 
 ISR(PCINT0_vect)
 {                                   // PIN Interruption - has priority over COMPA; this ensures that the switch will work
-    TIMSK = (0 << OCIE0A);           // Disable sound generation Interrupt
+    tick = 0;
     inputButtonValue = PINB & 0x02; // Reads button (digital input1, the second bit in register PINB. We check the value with & binary 10, so 0x02)
 }
 
@@ -242,12 +246,20 @@ void setParameter()
     ADCSRA |= (1 << ADSC); // start next conversion
 }
 
+void
+tickDelay(uint16_t delay)
+{
+    tick = 0;
+    while (tick < delay*(SRATE/1000)) // SRATE is ticks per second; this gets us to ms
+    ;
+}
+
 void checkButton()
 {
     while (inputButtonValue == HIGH)
     {
         button_delay++;
-        _delay_ms(10);
+        tickDelay(10);
     }
 
     if ((inputButtonValue == LOW) && (button_delay > 0))
@@ -257,7 +269,8 @@ void checkButton()
         {
             bool previousButtonState = inputButtonValue; // see if the button is pressed or not
 
-            _delay_ms(1);
+            tickDelay(1);
+            tick = 0;
 
             button_delay_b++; // fast counter to check if there are more presses
             if ((inputButtonValue == HIGH) && (previousButtonState == 0))
@@ -287,7 +300,6 @@ void checkButton()
                 button_delay_b = 0;
                 hold = false;
                 parameterChange = false; // reset parameter change condition so that after we press the button, the newly selected parameter won't immediately change (see setParameter)
-                TIMSK |= _BV(OCIE0A);;    // Enable Interrupt
             }
         }
     }
@@ -297,9 +309,9 @@ void flashLEDSlow(int times)
 {
     for (int i = 0; i < times; i++)
     {
-        _delay_ms(100);
+        tickDelay(100);
         digitalWrite(0, LOW);
-        _delay_ms(100);
+        tickDelay(100);
         digitalWrite(0, HIGH);
     }
 }
